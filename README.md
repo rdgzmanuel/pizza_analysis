@@ -1,5 +1,5 @@
-<<<<<<< HEAD
-In this analysisi we have considered that the ingredients bought one week
+<<<<<<< DESCRIPTION
+In this analysis we have considered that the ingredients bought one particular week
 expire in a week, so they are not available the following week. We have also
 asumed that the profit margin of this business is 15%, the average profit margin
 of pizzas in the USA.
