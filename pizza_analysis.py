@@ -1,6 +1,6 @@
 from typing import Dict
 import pandas as pd
-from typing import Dict
+
 
 def create_pizza_ingredients(df_pizza_types) -> Dict:
     """
@@ -11,6 +11,7 @@ def create_pizza_ingredients(df_pizza_types) -> Dict:
     for i in range(df_pizza_types.shape[0]):
         pizza_ingredients[df_pizza_types.loc[i, "pizza_type_id"]] = df_pizza_types.loc[i, "ingredients"]
     return pizza_ingredients
+
 
 def create_ingredients(pizza_ingredients):
     """
@@ -25,11 +26,13 @@ def create_ingredients(pizza_ingredients):
                 ingredients[ingredient] = 0
     return ingredients
 
+
 def obtain_prices(df_pizzas):
     """
     DataFrame containing the price of each pizza
     """
     return  df_pizzas.groupby("pizza_type_id").sum()/3
+
 
 def create_weekly_pizzas(df_orders, df_order_details, df_prices):
     """
@@ -100,6 +103,7 @@ def create_weekly_pizzas(df_orders, df_order_details, df_prices):
         # Column in which we select the optimal number of pizzas to make in a week.
     return df_weekly_pizzas
 
+
 def obtain_optimal(df_weekly_pizzas, pizza_ingredients, ingredients):
     """
     Iterate through the column optimal of df_weekly_pizzas to
@@ -113,6 +117,7 @@ def obtain_optimal(df_weekly_pizzas, pizza_ingredients, ingredients):
             ingredients[ingredient] += quantity
     return ingredients
 
+
 def show_strategy(optimal_ingredients):
     """
     Print our final results to see the quantity of each ingredient
@@ -122,6 +127,7 @@ def show_strategy(optimal_ingredients):
     print("-"*40)
     for key, value in optimal_ingredients.items():
         print(key + " "*(spaces - len(key)) + str(value))
+
 
 def create_csv(optimal_ingredients):
     """
@@ -135,13 +141,35 @@ def create_csv(optimal_ingredients):
     df = pd.DataFrame(ingredients)
     df.to_csv("optimal_ingredients.csv")
 
+
+def elaborar_informe(dfs):
+    informe = {
+        "column_name": [],
+        "type": [],
+        "n_nans": [],
+        "n_nulls": []}
+    for df in dfs:
+        for column in df.columns:
+            informe["column_name"].append(column)
+            informe["n_nans"].append(df[column].isna().sum())
+            informe["n_nulls"].append(df[column].isnull().sum())
+        for i in range(df.shape[1]):
+            ty = str(df.dtypes[i])            
+            informe["type"].append(ty)
+        
+    df = pd.DataFrame(informe)
+    df.to_csv("reporte_calidad_2015.csv")
+    return
+
+
+
 if __name__ == "__main__":
     df_orders = pd.read_csv("orders.csv")
     df_order_details = pd.read_csv("order_details.csv")
     df_pizzas = pd.read_csv("pizzas.csv")
     df_pizza_types = pd.read_csv("pizza_types.csv", encoding="latin1")
     
-
+    elaborar_informe([df_orders, df_order_details, df_pizzas, df_pizza_types])
     pizza_ingredients = create_pizza_ingredients(df_pizza_types)
     ingredients = create_ingredients(pizza_ingredients)
 
